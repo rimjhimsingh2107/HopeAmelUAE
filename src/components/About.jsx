@@ -6,6 +6,7 @@ import image4 from "../assets/image4.png";
 import image5 from "../assets/image5.png";
 import image6 from "../assets/image6.png";
 import { Link } from "react-router-dom";
+import BackButton from "./ui/BackButton.jsx";
 
 const images = [image1, image2, image3, image4, image5, image6];
 
@@ -21,6 +22,9 @@ export default function About() {
 
   return (
     <div className="bg-[#F4F7FB] min-h-screen font-sans text-[#1F2937]">
+      {/* Back Button */}
+      <BackButton />
+      
       {/* Header */}
       <section className="bg-gradient-to-r from-[#D0E8F2] to-[#F7E46C] py-16 px-6 text-center">
         <h1 className="text-4xl font-bold text-logoGreen mb-4">About Us</h1>

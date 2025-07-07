@@ -27,8 +27,8 @@ router.post('/create-checkout-session', async (req, res) => {
         }
       ],
       mode: 'payment',
-      success_url: `https://your-frontend-url.com/donate-success`,
-      cancel_url: `https://your-frontend-url.com/donate-cancel`,
+      success_url: `http://localhost:5173/donate-success`,
+      cancel_url: `http://localhost:5173/donate-cancel`,
       metadata: { donationId: donationRecord._id.toString() }
     });
 
@@ -40,19 +40,49 @@ router.post('/create-checkout-session', async (req, res) => {
 });
 
 // Stripe webhook to mark donation as paid
-router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+router.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // If we don't have a webhook secret, log a warning but don't block the process
+  // This is useful for development where webhooks might not be fully set up
+  if (!webhookSecret) {
+    console.warn('⚠️ STRIPE_WEBHOOK_SECRET not set, skipping signature verification');
+    // Manually parse the request body since it's raw
+    const payload = JSON.parse(req.body.toString());
+    
+    if (payload.type === 'checkout.session.completed') {
+      try {
+        const donationId = payload.data.object.metadata.donationId;
+        await Donation.findByIdAndUpdate(donationId, { paid: true });
+        console.log(`✅ Marked donation ${donationId} as paid`);
+      } catch (err) {
+        console.error('Error updating donation status:', err);
+      }
+    }
+    
+    return res.status(200).send();
+  }
+
+  // Normal webhook handling with signature verification
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
+  // Handle the event
   if (event.type === 'checkout.session.completed') {
     const donationId = event.data.object.metadata.donationId;
-    await Donation.findByIdAndUpdate(donationId, { paid: true });
+    try {
+      await Donation.findByIdAndUpdate(donationId, { paid: true });
+      console.log(`✅ Marked donation ${donationId} as paid`);
+    } catch (err) {
+      console.error('Error updating donation status:', err);
+      return res.status(500).send(`Error processing webhook: ${err.message}`);
+    }
   }
 
   res.status(200).send();

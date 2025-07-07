@@ -37,10 +37,7 @@ export default function Slideshow() {
       <div className="md:w-1/2 w-full bg-[#E6F0F5] p-6 rounded-xl shadow-md text-[#1F2937]">
         <h2 className="text-2xl font-bold text-[#22577A] mb-4">Who Are We?</h2>
         <p className="text-base leading-relaxed">
-          <strong>Hope Amel - UAE</strong> is a grassroots nonprofit initiative supporting single mothers across the United Arab Emirates.
-          Our mission is to provide dignity, stability, and opportunities to women raising children on their own. Through community donations, educational programs,
-          and partnerships with local organizations, we aim to empower single mothers with the resources and emotional support they need
-          to thrive. Every act of kindness makes a difference, and every donation brings hope.
+          <strong>Hope Amel - UAE</strong> is a small nonprofit started to support single mothers across the country. We focus on helping them feel seen, supported, and less alone. Whether its through donations, workshops, or simply being there when things get tough, our goal is to make sure these women have access to what they need to take care of their families and don’t have to face things alone. Everything we do is focused on making their day-to-day lives a little easier.
         </p>
       </div>
     </section>

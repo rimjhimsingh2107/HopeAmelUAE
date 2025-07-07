@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { testConnection, createDonation } from "../services/api.js";
 import bear from "../assets/bear.gif"; // optional cheer gif
+import BackButton from "./ui/BackButton.jsx";
 
 export default function Donation() {
   const [donation, setDonation] = useState({
@@ -7,14 +9,111 @@ export default function Donation() {
     amount: "",
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [connectionStatus, setConnectionStatus] = useState({
+    checking: true,
+    connected: false,
+    error: null
+  });
+
+  // Check backend connection when component mounts
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await testConnection();
+        setConnectionStatus({
+          checking: false,
+          connected: true,
+          error: null
+        });
+      } catch (error) {
+        setConnectionStatus({
+          checking: false,
+          connected: false,
+          error: error.message
+        });
+        setError("Cannot connect to server. Please check if the backend server is running.");
+      }
+    };
+    
+    checkConnection();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDonation({ ...donation, [name]: value });
+    // Clear any error/success messages when user starts typing again
+    setError("");
+    setSuccessMessage("");
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Check if backend is connected first
+    if (!connectionStatus.connected) {
+      setError("Cannot connect to server. Please check if the backend server is running.");
+      return;
+    }
+    
+    // Validate donation data
+    if (!donation.name.trim()) {
+      setError("Please provide your name.");
+      return;
+    }
+    
+    if (!donation.amount || parseFloat(donation.amount) <= 0) {
+      setError("Please provide a valid donation amount.");
+      return;
+    }
+    
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      const data = await createDonation({
+        name: donation.name.trim(),
+        amount: parseFloat(donation.amount),
+        message: donation.message.trim()
+      });
+      
+      if (data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        setError("Failed to process donation. No checkout URL provided.");
+      }
+    } catch (err) {
+      console.error("Donation error:", err);
+      setError(err.message || "Failed to process donation. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen font-sans text-[#1F2937] px-6 py-12 relative">
+      {/* Back Button */}
+      <BackButton />
+      {/* Connection Status Banner */}
+      {connectionStatus.checking ? (
+        <div className="bg-blue-100 p-2 text-center text-blue-700 mb-4 rounded">
+          Checking connection to server...
+        </div>
+      ) : connectionStatus.connected ? (
+        <div className="bg-green-100 p-2 text-center text-green-700 mb-4 rounded">
+          ✅ Connected to server
+        </div>
+      ) : (
+        <div className="bg-red-100 p-2 text-center text-red-700 mb-4 rounded">
+          ⚠️ Cannot connect to server: {connectionStatus.error}
+          <br />
+          <span className="text-sm">Please make sure the backend server is running on port 5000</span>
+        </div>
+      )}
+      
       {/* Header */}
       <section className="bg-[#FFF9DA] p-8 rounded-xl shadow-md max-w-4xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold text-[#22577A] mb-2">Make a Difference 💛</h1>
@@ -63,10 +162,26 @@ export default function Donation() {
         </label>
 
         <button
-          className="w-full bg-logoGreen text-white py-3 rounded-full font-semibold hover:bg-green-700 transition"
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="w-full bg-logoGreen text-white py-3 rounded-full font-semibold hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Donate Now 💌
+          {isLoading ? "Processing..." : "Donate Now 💌"}
         </button>
+        
+        {/* Error message */}
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+        
+        {/* Success message */}
+        {successMessage && (
+          <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+            {successMessage}
+          </div>
+        )}
       </section>
 
       {/* Motivational Quote Card */}

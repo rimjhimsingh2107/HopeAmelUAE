@@ -1,7 +1,7 @@
-import { useState } from "react";
-import bunny from "../assets/bunny.gif";
+import { useState, useEffect } from "react";
+import { testConnection, joinEvent } from "../services/api.js";
 import turtle from "../assets/turtle.gif";
-import bear from "../assets/bear.gif";
+import BackButton from "./ui/BackButton.jsx";
 
 const events = Array.from({ length: 12 }).map((_, i) => ({
   title: [
@@ -25,19 +25,111 @@ const events = Array.from({ length: 12 }).map((_, i) => ({
 
 export default function Events() {
   const [joined, setJoined] = useState(Array(events.length).fill(false));
+  const [dropdownVisible, setDropdownVisible] = useState(Array(events.length).fill(false));
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [connectionStatus, setConnectionStatus] = useState({
+    checking: true,
+    connected: false,
+    error: null
+  });
 
-  const handleJoin = (i) => {
-    const updated = [...joined];
-    updated[i] = !updated[i];
-    setJoined(updated);
+  // Check backend connection when component mounts
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await testConnection();
+        setConnectionStatus({
+          checking: false,
+          connected: true,
+          error: null
+        });
+      } catch (error) {
+        setConnectionStatus({
+          checking: false,
+          connected: false,
+          error: error.message
+        });
+      }
+    };
+    
+    checkConnection();
+  }, []);
+
+  const toggleDropdown = (i) => {
+    const copy = [...dropdownVisible];
+    copy[i] = !copy[i];
+    setDropdownVisible(copy);
   };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (i) => {
+    try {
+      // Validate form data
+      if (!formData.name || !formData.email) {
+        alert("Please provide both name and email.");
+        return;
+      }
+      
+      // Check if backend is connected first
+      if (!connectionStatus.connected) {
+        alert("Cannot connect to server. Please check if the backend server is running.");
+        return;
+      }
+      
+      // Use eventId format (this is what backend expects)
+      const eventId = `event-${i+1}`;
+      
+      console.log(`Joining event: ${eventId}`);
+      console.log('Form data:', formData);
+      
+      // Use the API service to join the event
+      const data = await joinEvent(eventId, formData);
+      
+      // Success - update UI
+      const copy = [...joined];
+      copy[i] = true;
+      setJoined(copy);
+      toggleDropdown(i);
+      setFormData({ name: "", email: "" }); // Reset form
+      alert("You've successfully signed up for the event!");
+      
+    } catch (error) {
+      console.error("Failed to join event:", error);
+      alert(error.message || "Failed to join event. Please try again.");
+    }
+  };
+  
 
   return (
     <div className="relative bg-[#F9FAFB] font-sans text-[#1F2937]">
+      {/* Back Button */}
+      <BackButton />
+      
       {/* Floating cheering animals */}
-        <img src={turtle} className="hidden md:block fixed left-4 top-32 w-20 z-10 opacity-90" alt="turtle cheering" />
-        <img src={turtle} className="hidden md:block fixed right-4 top-[60%] w-20 z-10 opacity-90" alt="turtle cheering" />
-        <img src={turtle} className="hidden md:block fixed left-8 bottom-12 w-20 z-10 opacity-90" alt="turtle cheering" />
+      <img src={turtle} className="hidden md:block fixed left-4 top-32 w-20 z-10 opacity-90" alt="turtle cheering" />
+      <img src={turtle} className="hidden md:block fixed right-4 top-[60%] w-20 z-10 opacity-90" alt="turtle cheering" />
+      <img src={turtle} className="hidden md:block fixed left-8 bottom-12 w-20 z-10 opacity-90" alt="turtle cheering" />
+
+      {/* Connection Status Banner */}
+      {connectionStatus.checking ? (
+        <div className="bg-blue-100 p-2 text-center text-blue-700">
+          Checking connection to server...
+        </div>
+      ) : connectionStatus.connected ? (
+        <div className="bg-green-100 p-2 text-center text-green-700">
+          ✅ Connected to server
+        </div>
+      ) : (
+        <div className="bg-red-100 p-2 text-center text-red-700">
+          ⚠️ Cannot connect to server: {connectionStatus.error}
+          <br />
+          <span className="text-sm">Please make sure the backend server is running on port 5000</span>
+        </div>
+      )}
 
       {/* Header */}
       <section className="bg-[#D0E8F2] py-16 px-6 text-center">
@@ -59,13 +151,39 @@ export default function Events() {
             <p className="text-sm font-medium text-[#4B5563] mb-2">{event.date}</p>
             <p className="text-base text-[#1F2937] mb-4">{event.desc}</p>
             <button
-              onClick={() => handleJoin(i)}
+              onClick={() => {
+                if (!joined[i]) toggleDropdown(i);
+              }}
               className={`${
                 joined[i] ? "bg-logoGreen" : "bg-[#22577A]"
               } text-white px-5 py-2 rounded-full font-medium hover:opacity-90 transition`}
             >
-              {joined[i] ? "You're In! 🎉" : "Join Event"}
+              {joined[i] ? "You're In! 🎉" : "Interested"}
             </button>
+
+            {/* Dropdown form */}
+            {!joined[i] && dropdownVisible[i] && (
+              <div className="mt-4 space-y-2">
+                <input
+                  name="name"
+                  placeholder="Your name"
+                  onChange={handleFormChange}
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  name="email"
+                  placeholder="Your email"
+                  onChange={handleFormChange}
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  onClick={() => handleSubmit(i)}
+                  className="bg-logoGreen text-white px-4 py-2 rounded"
+                >
+                  Join Event
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </section>
