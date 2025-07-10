@@ -1,5 +1,5 @@
 // API Service for Hope-Amel UAE
-const API_BASE_URL = 'http://localhost:5002';
+const API_BASE_URL = 'https://hope-amel-uae.onrender.com';
 
 // Helper function to handle API responses
 const handleResponse = async (response) => {
