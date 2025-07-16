@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function SentimentalSection() {
+export default function MessageSection() {
   return (
     <section className="bg-[#FFE066] rounded-xl shadow-md py-16 px-6 text-center">
       <h2 className="text-3xl font-bold text-[#22577A] mb-4">

@@ -26,7 +26,7 @@ const eventSignupSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Create a compound index to prevent duplicate signups
+
 eventSignupSchema.index({ eventId: 1, email: 1 }, { unique: true });
 
 const EventSignup = mongoose.model('EventSignup', eventSignupSchema);

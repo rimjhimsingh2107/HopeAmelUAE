@@ -7,13 +7,13 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// Create a Stripe checkout session for donation
+
 export const createCheckoutSession = async (req, res) => {
   try {
     const { name, amount, message, email } = req.body;
     console.log('Received donation request:', { name, amount, message, email });
 
-    // Input validation
+    
     if (!name || !amount) {
       console.log('Validation error: Name or amount missing');
       return res.status(400).json({
@@ -22,7 +22,7 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
-    // Ensure amount is valid
+    
     const donationAmount = parseFloat(amount);
     if (isNaN(donationAmount) || donationAmount <= 0) {
       console.log('Validation error: Invalid amount', amount);
@@ -32,7 +32,7 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
-    // Create donation record in database
+
     console.log('Creating donation record in database');
     const donation = await Donation.create({
       name,
@@ -44,7 +44,7 @@ export const createCheckoutSession = async (req, res) => {
     });
     console.log('Donation record created:', donation._id);
 
-    // Create Stripe checkout session
+    
     console.log('Creating Stripe checkout session');
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -56,7 +56,7 @@ export const createCheckoutSession = async (req, res) => {
               name: 'Donation to Hope Amel UAE',
               description: 'Supporting single mothers in the UAE'
             },
-            unit_amount: Math.round(donationAmount * 100) // Convert to cents
+            unit_amount: Math.round(donationAmount * 100) 
           },
           quantity: 1
         }
@@ -70,7 +70,7 @@ export const createCheckoutSession = async (req, res) => {
     });
     console.log('Stripe session created:', session.id);
 
-    // Update donation with Stripe session ID
+    
     await Donation.findByIdAndUpdate(donation._id, {
       stripeSessionId: session.id
     });
@@ -90,13 +90,13 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// Handle Stripe webhook
+
 export const handleStripeWebhook = async (req, res) => {
   let event;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   try {
-    // If webhook secret is set, verify the signature
+
     if (webhookSecret) {
       const signature = req.headers['stripe-signature'];
       event = stripe.webhooks.constructEvent(
@@ -105,17 +105,17 @@ export const handleStripeWebhook = async (req, res) => {
         webhookSecret
       );
     } else {
-      // For development without webhook secret
+   
       event = req.body;
     }
 
-    // Handle the event
+ 
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object;
         const donationId = session.metadata.donationId;
         
-        // Update donation status
+       
         await Donation.findByIdAndUpdate(donationId, {
           status: 'completed',
           stripePaymentId: session.payment_intent
@@ -133,7 +133,6 @@ export const handleStripeWebhook = async (req, res) => {
   }
 };
 
-// Get all donations (admin route)
 export const getAllDonations = async (req, res) => {
   try {
     const donations = await Donation.find().sort({ createdAt: -1 });

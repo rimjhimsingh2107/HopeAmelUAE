@@ -22,10 +22,10 @@ export default function About() {
 
   return (
     <div className="bg-[#F4F7FB] min-h-screen font-sans text-[#1F2937]">
-      {/* Back Button */}
+      {/*... */}
       <BackButton />
       
-      {/* Header */}
+      {/* ... */}
       <section className="bg-gradient-to-r from-[#D0E8F2] to-[#F7E46C] py-16 px-6 text-center">
         <h1 className="text-4xl font-bold text-logoGreen mb-4">About Us</h1>
         <p className="text-lg max-w-3xl mx-auto">
@@ -33,10 +33,10 @@ export default function About() {
         </p>
       </section>
 
-      {/* Slideshow */}
-      {/* View Our Story Button */}
-{/* View Our Story Button */}
-{/* Sentimental Story Section */}
+      {/* ...*/}
+      {/* ...*/}
+{/* ...*/}
+{/* ...*/}
 <section className="max-w-5xl mx-auto mt-12 px-4">
   <div className="bg-[#E6F0F5] rounded-xl shadow-md p-8 text-center">
     <h2 className="text-2xl font-bold text-logoGreen mb-3">💬 Our Story</h2>
@@ -75,7 +75,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Our Story */}
+      {/* ... */}
       <section className="max-w-5xl mx-auto mt-16 px-4">
         <div className="bg-white p-8 rounded-xl shadow-lg">
           <h2 className="text-2xl font-bold text-logoGreen mb-4">Who We Are</h2>
@@ -112,7 +112,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* ... */}
       <section className="mt-20 text-center bg-[#F7E46C] py-12">
         <h2 className="text-2xl font-bold text-[#22577A] mb-3">Join Us in Making a Difference</h2>
         <Link

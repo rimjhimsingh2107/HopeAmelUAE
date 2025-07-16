@@ -1,12 +1,12 @@
 import EventSignup from '../models/EventSignup.js';
 
-// Create a new event signup
+
 export const joinEvent = async (req, res) => {
   try {
     const { name, email } = req.body;
     const { eventId } = req.params;
 
-    // Input validation
+   
     if (!name || !email) {
       return res.status(400).json({
         status: 'error',
@@ -14,7 +14,7 @@ export const joinEvent = async (req, res) => {
       });
     }
 
-    // Check if the user has already signed up for this event
+    
     const existingSignup = await EventSignup.findOne({ eventId, email });
     if (existingSignup) {
       return res.status(400).json({
@@ -23,7 +23,7 @@ export const joinEvent = async (req, res) => {
       });
     }
 
-    // Create new signup
+  
     const newSignup = await EventSignup.create({
       eventId,
       name,
@@ -46,7 +46,7 @@ export const joinEvent = async (req, res) => {
   }
 };
 
-// Get all signups for an event (optional admin endpoint)
+
 export const getEventSignups = async (req, res) => {
   try {
     const { eventId } = req.params;

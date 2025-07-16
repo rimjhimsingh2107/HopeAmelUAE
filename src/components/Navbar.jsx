@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png"; // ✅ Add your logo image here
+import logo from "../assets/logo.png"; 
 
 export default function Navbar() {
   return (
     <nav className="bg-[#D0E8F2] px-6 py-4 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Left: Logo + Title */}
+        {/* ...*/}
         <div className="flex items-center gap-3">
         <img
         src={logo}
@@ -19,7 +19,7 @@ export default function Navbar() {
 </div>
 
 
-        {/* Right: Nav Links */}
+        {/* ...*/}
         <ul className="flex gap-6 text-[#22577A] font-medium text-base">
           <li>
             <Link to="/about" className="hover:underline">About Us</Link>

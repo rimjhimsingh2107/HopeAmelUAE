@@ -4,30 +4,30 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 
-// Import routes
+
 import eventRoutes from './routes/eventRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
 
-// Load environment variables
+
 dotenv.config();
 
-// Create Express app
+
 const app = express();
 
-// Middleware
-app.use(morgan('dev')); // Logging middleware
+
+app.use(morgan('dev')); 
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc.)
+  
     if (!origin) return callback(null, true);
     
-    // Simple localhost regex to allow all localhost ports
+   
     const localhostRegex = /^https?:\/\/localhost(:[0-9]+)?$/;
     
     if (localhostRegex.test(origin)) {
       return callback(null, true);
     } else {
-      // For production, you might want to limit to specific domains
+     
       return callback(null, true);
     }
   },
@@ -36,14 +36,14 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With', 'stripe-signature']
 }));
 
-// Special route for Stripe webhooks - needs raw body
+
 app.use('/api/donations/webhook', express.raw({ type: 'application/json' }));
 
-// Body parsers for regular routes
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'success',
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check endpoint
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
     status: 'success',
@@ -62,7 +62,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Test endpoint
+
 app.get('/api/test', (req, res) => {
   res.status(200).json({ 
     status: 'success',
@@ -71,11 +71,9 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// API routes
 app.use('/api/events', eventRoutes);
 app.use('/api/donations', donationRoutes);
 
-// Error handler for undefined routes
 app.use('*', (req, res) => {
   res.status(404).json({
     status: 'error',
@@ -83,7 +81,7 @@ app.use('*', (req, res) => {
   });
 });
 
-// Global error handler
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
@@ -93,7 +91,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB and start server
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

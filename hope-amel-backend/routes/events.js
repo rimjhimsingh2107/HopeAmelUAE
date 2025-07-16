@@ -1,10 +1,10 @@
-// routes/events.js
+
 import express from 'express';
 import EventSignup from '../models/EventSignup.js';
 
 const router = express.Router();
 
-// POST /api/events/:eventId/join
+
 router.post('/:eventId/join', async (req, res) => {
   console.log('Received join request for event:', req.params.eventId);
   console.log('Request body:', req.body);
@@ -13,7 +13,7 @@ router.post('/:eventId/join', async (req, res) => {
     let { name, email } = req.body;
     const { eventId } = req.params;
 
-    // Validate inputs
+
     if (!req.body) {
       console.error('Empty request body');
       return res.status(400).json({ error: 'Request body is empty.' });
@@ -27,7 +27,7 @@ router.post('/:eventId/join', async (req, res) => {
       return res.status(400).json({ error: 'Name and email are required.' });
     }
 
-    // Create and save the new signup
+
     try {
       const newSignup = new EventSignup({
         eventId: String(eventId),
@@ -48,7 +48,7 @@ router.post('/:eventId/join', async (req, res) => {
   }
 });
 
-// GET /api/events/:eventId/signups (optional admin view)
+
 router.get('/:eventId/signups', async (req, res) => {
   try {
     const signups = await EventSignup.find({ eventId: String(req.params.eventId) });

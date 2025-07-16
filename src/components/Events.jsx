@@ -33,7 +33,7 @@ export default function Events() {
     error: null
   });
 
-  // Check backend connection when component mounts
+  
   useEffect(() => {
     const checkConnection = async () => {
       try {
@@ -68,33 +68,33 @@ export default function Events() {
 
   const handleSubmit = async (i) => {
     try {
-      // Validate form data
+      
       if (!formData.name || !formData.email) {
         alert("Please provide both name and email.");
         return;
       }
       
-      // Check if backend is connected first
+     
       if (!connectionStatus.connected) {
         alert("Cannot connect to server. Please check if the backend server is running.");
         return;
       }
       
-      // Use eventId format (this is what backend expects)
+      
       const eventId = `event-${i+1}`;
       
       console.log(`Joining event: ${eventId}`);
       console.log('Form data:', formData);
       
-      // Use the API service to join the event
+    
       const data = await joinEvent(eventId, formData);
       
-      // Success - update UI
+ 
       const copy = [...joined];
       copy[i] = true;
       setJoined(copy);
       toggleDropdown(i);
-      setFormData({ name: "", email: "" }); // Reset form
+      setFormData({ name: "", email: "" });
       alert("You've successfully signed up for the event!");
       
     } catch (error) {
@@ -106,15 +106,15 @@ export default function Events() {
 
   return (
     <div className="relative bg-[#F9FAFB] font-sans text-[#1F2937]">
-      {/* Back Button */}
+      {/* ...*/}
       <BackButton />
       
-      {/* Floating cheering animals */}
+      {/* ... */}
       <img src={turtle} className="hidden md:block fixed left-4 top-32 w-20 z-10 opacity-90" alt="turtle cheering" />
       <img src={turtle} className="hidden md:block fixed right-4 top-[60%] w-20 z-10 opacity-90" alt="turtle cheering" />
       <img src={turtle} className="hidden md:block fixed left-8 bottom-12 w-20 z-10 opacity-90" alt="turtle cheering" />
 
-      {/* Connection Status Banner */}
+      {/* ... */}
       {connectionStatus.checking ? (
         <div className="bg-blue-100 p-2 text-center text-blue-700">
           Checking connection to server...
@@ -131,7 +131,7 @@ export default function Events() {
         </div>
       )}
 
-      {/* Header */}
+      {/* ... */}
       <section className="bg-[#D0E8F2] py-16 px-6 text-center">
         <h1 className="text-4xl font-bold text-logoGreen mb-2">Upcoming Events 🗓️</h1>
         <p className="text-lg text-[#374151]">
@@ -139,7 +139,7 @@ export default function Events() {
         </p>
       </section>
 
-      {/* Scrollable list of events */}
+      {/* ... */}
       <section className="max-w-5xl mx-auto py-16 px-4 space-y-8">
         {events.map((event, i) => (
           <div
@@ -161,7 +161,7 @@ export default function Events() {
               {joined[i] ? "You're In! 🎉" : "Interested"}
             </button>
 
-            {/* Dropdown form */}
+            {/* ... */}
             {!joined[i] && dropdownVisible[i] && (
               <div className="mt-4 space-y-2">
                 <input

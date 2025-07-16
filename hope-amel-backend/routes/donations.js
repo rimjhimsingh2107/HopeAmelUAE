@@ -7,7 +7,7 @@ dotenv.config();
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Create Stripe checkout session
+
 router.post('/create-checkout-session', async (req, res) => {
   const { name, amount, message } = req.body;
 
@@ -39,16 +39,15 @@ router.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-// Stripe webhook to mark donation as paid
+
 router.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  // If we don't have a webhook secret, log a warning but don't block the process
-  // This is useful for development where webhooks might not be fully set up
+
   if (!webhookSecret) {
     console.warn('⚠️ STRIPE_WEBHOOK_SECRET not set, skipping signature verification');
-    // Manually parse the request body since it's raw
+
     const payload = JSON.parse(req.body.toString());
     
     if (payload.type === 'checkout.session.completed') {
@@ -64,7 +63,7 @@ router.post('/webhook', async (req, res) => {
     return res.status(200).send();
   }
 
-  // Normal webhook handling with signature verification
+
   let event;
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
@@ -73,7 +72,7 @@ router.post('/webhook', async (req, res) => {
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
-  // Handle the event
+
   if (event.type === 'checkout.session.completed') {
     const donationId = event.data.object.metadata.donationId;
     try {

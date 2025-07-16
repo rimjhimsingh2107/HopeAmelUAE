@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { testConnection, createDonation } from "../services/api.js";
-import bear from "../assets/bear.gif"; // optional cheer gif
+import bear from "../assets/bear.gif";
 import BackButton from "./ui/BackButton.jsx";
 
 export default function Donation() {
@@ -18,7 +18,6 @@ export default function Donation() {
     error: null
   });
 
-  // Check backend connection when component mounts
   useEffect(() => {
     const checkConnection = async () => {
       try {
@@ -44,7 +43,7 @@ export default function Donation() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDonation({ ...donation, [name]: value });
-    // Clear any error/success messages when user starts typing again
+ 
     setError("");
     setSuccessMessage("");
   };
@@ -52,13 +51,13 @@ export default function Donation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if backend is connected first
+
     if (!connectionStatus.connected) {
       setError("Cannot connect to server. Please check if the backend server is running.");
       return;
     }
     
-    // Validate donation data
+
     if (!donation.name.trim()) {
       setError("Please provide your name.");
       return;
@@ -80,7 +79,7 @@ export default function Donation() {
       });
       
       if (data.url) {
-        // Redirect to Stripe checkout
+     
         window.location.href = data.url;
       } else {
         setError("Failed to process donation. No checkout URL provided.");
@@ -95,9 +94,9 @@ export default function Donation() {
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen font-sans text-[#1F2937] px-6 py-12 relative">
-      {/* Back Button */}
+      {/* ... */}
       <BackButton />
-      {/* Connection Status Banner */}
+      {/* ... */}
       {connectionStatus.checking ? (
         <div className="bg-blue-100 p-2 text-center text-blue-700 mb-4 rounded">
           Checking connection to server...
@@ -114,7 +113,7 @@ export default function Donation() {
         </div>
       )}
       
-      {/* Header */}
+      {/* ...*/}
       <section className="bg-[#FFF9DA] p-8 rounded-xl shadow-md max-w-4xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold text-[#22577A] mb-2">Make a Difference 💛</h1>
         <p className="text-lg">
@@ -123,7 +122,7 @@ export default function Donation() {
         <img src={bear} alt="bear cheer" className="mx-auto mt-4 w-24 rounded-full" />
       </section>
 
-      {/* Donation Form */}
+      {/* ... */}
       <section className="bg-white max-w-xl mx-auto p-6 rounded-xl shadow-lg space-y-5">
         <label className="block">
           <span className="block mb-1 font-medium text-logoGreen">Your Name</span>
@@ -169,14 +168,14 @@ export default function Donation() {
           {isLoading ? "Processing..." : "Donate Now 💌"}
         </button>
         
-        {/* Error message */}
+        {/* ... */}
         {error && (
           <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
             {error}
           </div>
         )}
         
-        {/* Success message */}
+        {/* ...*/}
         {successMessage && (
           <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
             {successMessage}
@@ -184,7 +183,7 @@ export default function Donation() {
         )}
       </section>
 
-      {/* Motivational Quote Card */}
+      {/* ... */}
       <section className="max-w-xl mx-auto mt-10 text-center text-[#374151] italic bg-[#E6F0F5] p-6 rounded-xl shadow-md">
         “No act of kindness, no matter how small, is ever wasted.”
       </section>

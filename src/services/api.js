@@ -1,33 +1,31 @@
-// API Service for Hope-Amel UAE
+
 const API_BASE_URL = 'https://hope-amel-uae.onrender.com';
 
-// Helper function to handle API responses
+
 const handleResponse = async (response) => {
-  // First check if response is ok
+  
   if (!response.ok) {
     let errorData;
     try {
-      // Try to parse error as JSON
+     
       errorData = await response.json();
     } catch (e) {
-      // If parsing fails, use status text
+      
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
-    
-    // Throw error with message from API if available
+
     throw new Error(errorData.error || `API Error: ${response.status}`);
   }
   
-  // For successful responses, parse JSON
+
   try {
     return await response.json();
   } catch (e) {
     console.error("Failed to parse JSON response:", e);
-    return { success: true }; // Return a simple success object if parsing fails
+    return { success: true }; 
   }
 };
 
-// Test the API connection
 export const testConnection = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/test`);
@@ -38,7 +36,7 @@ export const testConnection = async () => {
   }
 };
 
-// Event API calls
+
 export const joinEvent = async (eventId, userData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/events/${eventId}/join`, {
@@ -57,7 +55,7 @@ export const joinEvent = async (eventId, userData) => {
   }
 };
 
-// Donation API calls
+
 export const createDonation = async (donationData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/donations/create-checkout-session`, {
