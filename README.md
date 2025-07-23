@@ -47,12 +47,19 @@ npm run dev
 ## Deployment
 
 **Frontend:** Render Static Site (npm run build → dist)
+
 **Backend:** Render Web Service (root: backend, start: npm start)
 
 ## API Endpoints
 GET /api/events - Get all events
+
+
 POST /api/events/:id/join - Register for event
+
+
 POST /api/donations/create-checkout-session - Create payment
+
+
 
 
 Made with ❤️ for Hope Amel UAE 
