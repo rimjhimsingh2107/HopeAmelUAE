@@ -1,15 +1,49 @@
-# React + Vite
+Hope Amel UAE 🌟
+A full-stack web application supporting single mothers in the UAE through community events and donation management.
+Demo
+Website: https://hope-amel-uae-4map.onrender.com
+Tech Stack
+Frontend: React, Vite, Tailwind CSS, React Router
+Backend: Node.js, Express, MongoDB Atlas, Mongoose
+Services: Stripe API, Render Cloud Hosting
+Quick Start
+Installation
+bash# Clone repository
+git clone https://github.com/rimjhimsingh2107/HopeAmelUAE.git
+cd hope-amel-uae
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Install dependencies
+npm install
+cd backend && npm install && cd ..
 
-Currently, two official plugins are available:
+# Set up environment variables in backend/.env
+PORT=5002
+MONGODB_URI=your_mongodb_connection_string
+STRIPE_SECRET_KEY=your_stripe_secret_key
+NODE_ENV=development
+Development
+bash# Start backend (in backend directory)
+npm run dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Start frontend  
+npm run dev
+Features
 
-## Expanding the ESLint configuration
+Event Registration: Browse and register for community events
+Donation Processing: Secure payments via Stripe
+Responsive Design: Mobile-first, accessible UI
+Admin Dashboard: Event and donation management
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# HopeAmelUAE
-# Hope-Amel-UAE
-# HopeAmelUAE
+ Deployment
+
+Frontend: Render Static Site (npm run build → dist)
+Backend: Render Web Service (root: backend, start: npm start)
+
+ API Endpoints
+
+GET /api/events - Get all events
+POST /api/events/:id/join - Register for event
+POST /api/donations/create-checkout-session - Create payment
+
+
+Made with ❤️ for Hope Amel UAE - Empowering single mothers in the UAE
